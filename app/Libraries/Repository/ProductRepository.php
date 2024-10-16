@@ -5,7 +5,9 @@ use App\Libraries\Repository\Interfaces\ProductRepositoryInterface;
 use App\Models\Products;
 use App\Http\Requests\CreateProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Models\OrderStatuses;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
 class ProductRepository implements ProductRepositoryInterface
@@ -47,5 +49,15 @@ class ProductRepository implements ProductRepositoryInterface
             $product->deleted_at = Carbon::now();
             $product->save();
         });
+    }
+
+    public function getProductsToOrderStatus(): Collection|null
+    {
+        return OrderStatuses::select('order_statuses.id as order_status_id', 'order_statuses.status as order_status_name')
+            ->leftJoin('orders', 'order_statuses.id', '=', 'orders.status_id')
+            ->leftJoin('order_products', 'orders.id', '=', 'order_products.order_id')
+            ->selectRaw('COUNT(order_products.product_id) as product_count')
+            ->groupBy('order_statuses.id', 'order_statuses.status')
+            ->get();
     }
 }

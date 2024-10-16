@@ -4,6 +4,7 @@ namespace App\Libraries\Repository\Interfaces;
 use App\Http\Requests\CreateProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Products;
+use Illuminate\Database\Eloquent\Collection;
 
 interface ProductRepositoryInterface
 {
@@ -11,4 +12,5 @@ interface ProductRepositoryInterface
     public function createProduct(CreateProductRequest $request): void;
     public function updateProduct(UpdateProductRequest $request, int $productId): void;
     public function deleteProduct(int $productId): void;
+    public function getProductsToOrderStatus(): Collection|null;
 }
