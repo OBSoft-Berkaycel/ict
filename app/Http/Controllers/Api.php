@@ -27,11 +27,10 @@ class Api
             ], 200);
 
         } catch (\Exception $e) {
-            dd("Error: ".$e->getMessage());
             return response()->json([
                 'error' => 'Internal Server Error',
-                'message' => 'Hata'
-            ], 500);
+                'message' => $e->getMessage()
+            ], 422);
         }
     }
 
