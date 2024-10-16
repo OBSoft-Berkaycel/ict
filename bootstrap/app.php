@@ -11,7 +11,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+
+        //This csrf protection disabling line was added for test purpose!
+        // TODO: This line will be removed! 
+        $middleware->validateCsrfTokens(except: [
+            'v1/product*',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

@@ -37,6 +37,12 @@ class OrderListRequest extends FormRequest
 
     public function failedValidation(Validator $validator)
     {
-        throw new HttpResponseException($this->error($validator->errors()->toArray(), ResponseAlias::HTTP_UNPROCESSABLE_ENTITY, 'Lütfen alanları kontrol ediniz!'));
+        $response = response()->json([
+            'status' => 'error',
+            'message' => 'Lütfen alanları kontrol ediniz!',
+            'errors' => $validator->errors()->toArray()
+        ], ResponseAlias::HTTP_UNPROCESSABLE_ENTITY);
+    
+        throw new HttpResponseException($response);
     }
 }

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Database\Factories\ProductsFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Products extends Model
 {
@@ -51,5 +52,15 @@ class Products extends Model
     protected static function newFactory(): Factory
     {
         return ProductsFactory::new();
+    }
+
+    /**
+     * The order that belong to the Products
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function order(): BelongsToMany
+    {
+        return $this->belongsToMany(Orders::class, 'order_products', 'product_id', 'order_id');
     }
 }

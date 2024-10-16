@@ -3,41 +3,36 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\OrderListRequest;
-use App\Http\Resources\OrderListResource;
-use App\Models\Orders;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
-use Symfony\Component\HttpFoundation\Response as ResponseAlias;
+use App\Libraries\Repository\Interfaces\OrderRepositoryInterface;
+use App\Libraries\Services\Interfaces\OrderListServiceInterface;
 
 class Api
 {
+    public function __construct(private readonly OrderRepositoryInterface $orderRepository, private readonly OrderListServiceInterface $orderListService){}
 
     public function orders(OrderListRequest $request)
     {
         try {
-            // FIXME order_no ile de liste çekilebilecek, order_no alanı gönderilmiyorsa tüm siparişler listelenecek.
-            $data = OrderListResource::collection(
-                Orders::with([
-                    'products',
-                    'customer',
-                    'status',
-                ])
-                ->where('customer_id', $request->get('customer_id') )
-                ->orderBy('id', 'DESC')
-                ->get()
-             );
+            if(!$request->has('order_no') || !$request->get('order_no'))
+            {
+                $data = $this->orderListService->listAllOrders($request);
+            }
+            else
+            {
+                $data = $this->orderListService->listOrderByOrderNo($request);
+            }
 
             return response()->json([
                 'orders' => $data->resolve(),
             ], 200);
 
         } catch (\Exception $e) {
+            dd("Error: ".$e->getMessage());
             return response()->json([
                 'error' => 'Internal Server Error',
                 'message' => 'Hata'
             ], 500);
         }
     }
+
 }

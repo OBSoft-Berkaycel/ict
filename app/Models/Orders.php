@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Orders extends Model
 {
@@ -63,6 +64,16 @@ class Orders extends Model
     public function products()
     {
         return $this->hasMany(OrderProducts::class, 'order_id', 'id');
+    }
+
+    /**
+     * The roles that belong to the Orders
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function orderProducts(): BelongsToMany
+    {
+        return $this->belongsToMany(Products::class, 'order_products', 'order_id', 'product_id');
     }
 
 
