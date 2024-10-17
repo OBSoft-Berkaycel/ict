@@ -51,13 +51,31 @@ class ProductRepository implements ProductRepositoryInterface
         });
     }
 
-    public function getProductsToOrderStatus(): Collection|null
+    public function getProductCountByOrderStatus(): Collection|null
     {
         return OrderStatuses::select('order_statuses.id as order_status_id', 'order_statuses.status as order_status_name')
             ->leftJoin('orders', 'order_statuses.id', '=', 'orders.status_id')
             ->leftJoin('order_products', 'orders.id', '=', 'order_products.order_id')
             ->selectRaw('COUNT(order_products.product_id) as product_count')
             ->groupBy('order_statuses.id', 'order_statuses.status')
+            ->get();
+    }
+
+    public function getTopUsedOutOfStockProducts(): Collection|null
+    {
+        $oneYearAgo = Carbon::now()->subYear();
+        $oneMonthAgo = Carbon::now()->subMonth();
+
+        return Products::where('stock_status', 0)
+            ->whereHas('orders', function ($query) use ($oneYearAgo) {
+                $query->where('order_date', '>=', $oneYearAgo);
+            })
+            ->whereHas('orders', function ($query) use ($oneMonthAgo) {
+                $query->where('order_date', '>=', $oneMonthAgo);
+            })
+            ->withCount('orders')
+            ->orderBy('orders_count', 'desc')
+            ->limit(5)
             ->get();
     }
 }

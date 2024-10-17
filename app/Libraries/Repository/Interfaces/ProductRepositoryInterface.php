@@ -12,5 +12,6 @@ interface ProductRepositoryInterface
     public function createProduct(CreateProductRequest $request): void;
     public function updateProduct(UpdateProductRequest $request, int $productId): void;
     public function deleteProduct(int $productId): void;
-    public function getProductsToOrderStatus(): Collection|null;
+    public function getProductCountByOrderStatus(): Collection|null;
+    public function getTopUsedOutOfStockProducts(): Collection|null;
 }

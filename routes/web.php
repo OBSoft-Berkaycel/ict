@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -12,6 +13,9 @@ Route::group([
 
     // TODO 4 fonksiyon implement edilecek. Gerekli yerlerde Request/Resource class'ları üstteki endpointteki şekliyle kullanılmalıdır.
 
+    Route::get('product/listTopUsedOutOfStockProducts', [ProductController::class,'listTopUsedOutOfStockProducts'])->name('product.list.TopUsedOutOfStock');
+    Route::get('product/listProductCountByOrderStatus',[ProductController::class,'listProductCountByOrderStatus'])->name('product.list.productCountByOrderStatus');
+    
     Route::get('product/{productId}', [\App\Http\Controllers\ProductController::class, 'get'])->name('get-product');
     Route::put('product/{productId}', [\App\Http\Controllers\ProductController::class, 'update'])->name('update-product');
     Route::post('product', [\App\Http\Controllers\ProductController::class, 'store'])->name('create-product');

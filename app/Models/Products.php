@@ -59,7 +59,7 @@ class Products extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function order(): BelongsToMany
+    public function orders(): BelongsToMany
     {
         return $this->belongsToMany(Orders::class, 'order_products', 'product_id', 'order_id');
     }

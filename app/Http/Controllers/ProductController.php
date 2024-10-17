@@ -78,4 +78,35 @@ class ProductController extends Controller
             return response()->json(['status' => false, 'message' => $th->getMessage()],422);
         }
     }
+
+
+    public function listProductCountByOrderStatus()
+    {
+        try {
+            $productResponse = $this->productRepository->getProductCountByOrderStatus();
+            $productData = new ProductListResource($productResponse);
+            return response()->json([
+                'status' => true,
+                'message' => $productData->resolve()
+            ],200);
+        } catch (\Throwable $th) {
+            Log::error("There is an error occured on list product count by order status process. Error: ".$th->getMessage());
+            return response()->json(['status' => false, 'message' => $th->getMessage()],422);
+        }
+    }
+
+    public function listTopUsedOutOfStockProducts()
+    {
+        try {
+            $productResponse = $this->productRepository->getTopUsedOutOfStockProducts();
+            $productData = new ProductListResource($productResponse);
+            return response()->json([
+                'status' => true,
+                'message' => $productData->resolve()
+            ],200);
+        } catch (\Throwable $th) {
+            Log::error("There is an error occured on list top used out of stock products process. Error: ".$th->getMessage());
+            return response()->json(['status' => false, 'message' => $th->getMessage()],422);
+        }
+    }
 }
